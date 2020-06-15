@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using BlockBuster.Models;
 using PagedList;
+using PagedList.Mvc;
 
 namespace BlockBuster.Controllers
 {
@@ -195,6 +196,76 @@ namespace BlockBuster.Controllers
             ViewBag.count = favors.Count;
             ViewBag.id = id;
             return View(favors.ToPagedList(pageNum, pageSize));
+        }
+        // Danh sach phim da danh gia
+        public ActionResult Account_rated(int id, int? page)
+        {
+            // phan trang
+            int pageSize = 5;
+            int pageNum = (page ?? 1);
+
+            var reviews = data.reviews.Where(or => or.user_id == id).OrderByDescending(a => a.created).ToList();
+            ViewBag.count = reviews.Count;
+            ViewBag.id = id;
+            return View(reviews.ToPagedList(pageNum, pageSize));
+        }
+        //[HttpGet]
+        //public ActionResult Change_pass()
+        //{
+        //    return View();
+        //}
+        //[HttpPost]
+        //[ValidateInput(false)]
+        //public ActionResult Change_pass(FormCollection collection)
+        //{
+        //    if (Session["UserAccount"] == null)
+        //    {
+        //        return RedirectToAction("Login");
+        //    }
+        //    user users = (user)Session["UserAccount"];
+        //    user use = data.users.SingleOrDefault(n => n.id == users.id);
+        //    var pass1 = use.password;
+        //    var pass2 = collection["old_password"];
+        //    var pass3 = collection["new_password"];
+        //    if (Equals(pass1, pass2) == true)
+        //    {
+        //        use.password = pass3;
+        //        UpdateModel(use);
+        //        data.SubmitChanges();
+        //        ViewBag.Notification = 1;
+        //        Session.Remove("UserAccount");
+        //        return this.Change_pass();
+        //    }
+        //    ViewBag.Notification = 0;
+        //    return this.Change_pass();
+        //}
+        //[HttpGet]
+        //public ActionResult Forgot_pass()
+        //{
+        //    return View();
+        //}
+        //[HttpPost]
+        //[ValidateInput(false)]
+        //public ActionResult Forgot_pass(FormCollection collection)
+        //{
+        //    var email = collection["email"];
+        //    user use = data.users.SingleOrDefault(n => n.email == email);
+        //    if (use == null)
+        //    {
+        //        ViewBag.Notification = 0;
+        //        return this.Forgot_pass();
+        //    }
+        //    use.password = collection["password"];
+        //    UpdateModel(use);
+        //    data.SubmitChanges();
+        //    ViewBag.Notification = 1;
+        //    Session.Remove("UserAccount");
+        //    return this.Forgot_pass();
+        //}
+        public ActionResult Logout()
+        {
+            Session.Remove("UserAccount");
+            return RedirectToAction("Index", "Home");
         }
     }
 }
